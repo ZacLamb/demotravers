@@ -1,0 +1,13 @@
+<%# expects: town (optional), exclude (optional slug), only (optional array of slugs) %>
+<div class="grid-3">
+  <% services.filter(s => !(typeof exclude !== 'undefined' && s.slug === exclude) && !(typeof only !== 'undefined' && only && !only.includes(s.slug))).forEach(s => { %>
+  <a class="card-img card-link" href="<%= typeof town !== 'undefined' && town ? stUrl(s, town) : svcUrl(s) %>">
+    <img src="<%= img(s.card, 800) %>" loading="lazy" decoding="async" alt="<%= s.name %><%= typeof town !== 'undefined' && town ? ' in ' + town.name + ', MA' : ' on the South Shore, MA' %>">
+    <div class="card-body">
+      <h3 style="font-size:21px"><%= s.name %><%= typeof town !== 'undefined' && town ? ' in ' + town.name : '' %></h3>
+      <p class="muted mt-s" style="font-size:15px"><%= s.cardLine %></p>
+      <span class="more chev">Learn more</span>
+    </div>
+  </a>
+  <% }) %>
+</div>

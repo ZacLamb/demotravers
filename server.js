@@ -1,93 +1,224 @@
-'use strict';
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
-const division = require('./data/division');
+
+const biz = require('./data/business');
+const services = require('./data/services');
+const towns = require('./data/towns');
 const articles = require('./data/articles');
+const images = require('./data/images');
+const { serviceTown, townHub, list } = require('./data/compose');
 const { sendLead } = require('./lib/ghl');
+
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
-const SITE_URL = (process.env.SITE_URL || `http://localhost:${PORT}`).replace(/\/$/, '');
-const MAIN_SITE_URL = 'https://www.traversgroupma.com';
-const PHONE = '(508) 888-9432';
-const PHONE_LINK = 'tel:+15088889432';
-const IMG = 'https://images.leadconnectorhq.com/image/f_webp/q_80/r_1600/u_https://storage.googleapis.com/msgsndr/ENMZbnrUlbWf0nPU4x5L/media/67d097f8e1f641371dea52fe.png';
-const services = division.services;
-const towns = division.areas;
-app.disable('x-powered-by');
-app.set('trust proxy', 1);
+const PORT = process.env.PORT || 3000;
+const SITE_URL = (process.env.SITE_URL || 'https://demolition.traversgroupma.com').replace(/\/$/, '');
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.disable('x-powered-by');
 app.use(compression());
-app.use(express.static(path.join(__dirname, 'public'), {maxAge: '1d'}));
-app.use(express.json({limit: '25kb'}));
-app.use(express.urlencoded({extended: false, limit: '25kb'}));
-// No forced www/root hostname redirect: this standalone repo can run on any Railway custom domain.
-app.use((req,res,next)=>{
-  res.locals = {siteUrl:SITE_URL,mainSite:MAIN_SITE_URL,phone:PHONE,phoneLink:PHONE_LINK,
-    heroImage:IMG,services,towns,articles,currentPath:req.path,year:new Date().getFullYear()};
+app.set('trust proxy', 1);
+app.use(express.json({ limit: '20kb' }));
+app.use(express.urlencoded({ extended: false, limit: '20kb' }));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: '7d' }));
+
+// Optional canonical-host redirect: set CANONICAL_HOST (e.g. demolition.traversgroupma.com)
+// once the custom domain is live so the *.up.railway.app host 301s to it.
+const CANONICAL_HOST = (process.env.CANONICAL_HOST || '').toLowerCase();
+app.use((req, res, next) => {
+  if (CANONICAL_HOST && req.hostname.toLowerCase() !== CANONICAL_HOST && !req.hostname.startsWith('localhost')) {
+    return res.redirect(301, `https://${CANONICAL_HOST}${req.originalUrl}`);
+  }
   next();
 });
-function page(res,template,{title,description,...data}) {
-  res.render(template,{title,description,canonical:SITE_URL+res.req.path, ...data});
+
+// Trailing-slash normalization
+app.use((req, res, next) => {
+  if (req.path.length > 1 && req.path.endsWith('/')) return res.redirect(301, req.path.slice(0, -1) + (req.url.slice(req.path.length) || ''));
+  next();
+});
+
+const svcUrl = (s) => `/services/${s.slug}`;
+const townUrl = (t) => `/service-areas/${t.slug}`;
+const stUrl = (s, t) => `/services/${s.slug}/${t.slug}`;
+const artUrl = (a) => `/articles/${a.slug}`;
+const regions = [...new Set(towns.map((t) => t.region))];
+
+app.locals = Object.assign(app.locals, {
+  biz, services, why: services.why, IMG: services.IMG, GALLERY: services.GALLERY, towns, regions, articles,
+  img: images.src, srcset: images.srcset, svcUrl, townUrl, stUrl, artUrl, list,
+  SITE_URL, GA_ID: process.env.GA_ID || '', year: new Date().getFullYear(),
+});
+
+function render(res, view, data) {
+  res.render(view, { canonical: SITE_URL + (res.req.path === '/' ? '' : res.req.path), breadcrumbs: [], ...data });
 }
-app.get('/',(req,res)=>page(res,'home',{
-  title:'Travers Demolition | South Shore MA Demolition & Excavation',
-  description:'A dedicated division of Travers Group. Residential and commercial demolition, pool removal, excavation, and site preparation inquiries across the South Shore.'
+
+// ---------- Pages ----------
+app.get('/', (req, res) => render(res, 'home', {
+  title: 'Travers Demolition | House & Commercial Demolition, Pool Removal | South Shore MA',
+  description: `Residential and light commercial demolition, pool removal, concrete removal and site prep across the South Shore and Cape Cod Canal. A division of Travers Group — ${biz.years} years local. ${biz.phone}.`,
 }));
-app.get('/services',(req,res)=>page(res,'services',{
-  title:'Demolition & Excavation Services | Travers Demolition',
-  description:'Explore residential demolition, commercial tear-outs, pool removal, concrete removal, excavation and site preparation.'
+
+app.get('/services', (req, res) => render(res, 'services', {
+  title: 'Demolition Services | House, Commercial, Pool & Concrete Removal | Travers Demolition',
+  description: 'House demolition, light commercial demolition, interior gut-outs, garage and shed removal, pool removal, concrete removal, excavation and debris hauling on the South Shore.',
+  breadcrumbs: [{ name: 'Services', url: '/services' }],
 }));
-app.get('/services/:slug',(req,res,next)=>{
-  const service=services.find(s=>s.slug===req.params.slug);
-  if(!service)return next();
-  page(res,'service',{service,title:`${service.name} | Travers Demolition`,description:service.meta});
+
+app.get('/services/:slug', (req, res, next) => {
+  const service = services.find((s) => s.slug === req.params.slug);
+  if (!service) return next();
+  render(res, 'service', {
+    service, title: service.title, description: service.meta, ogImage: service.hero,
+    breadcrumbs: [{ name: 'Services', url: '/services' }, { name: service.name, url: svcUrl(service) }],
+  });
 });
-app.get('/areas',(req,res)=>page(res,'areas',{
-  title:'South Shore Demolition Service Areas | Travers Demolition',
-  description:'Demolition and excavation project inquiries across Plymouth, Marshfield, Duxbury, Hingham and surrounding South Shore communities.'
+
+app.get('/services/:slug/:town', (req, res, next) => {
+  const service = services.find((s) => s.slug === req.params.slug);
+  const town = towns.find((t) => t.slug === req.params.town);
+  if (!service || !town) return next();
+  const c = serviceTown(service, town, towns);
+  render(res, 'service-town', {
+    service, town, c, title: c.title, description: c.meta, ogImage: service.hero,
+    breadcrumbs: [
+      { name: 'Services', url: '/services' },
+      { name: service.name, url: svcUrl(service) },
+      { name: `${town.name}, MA`, url: stUrl(service, town) },
+    ],
+  });
+});
+
+app.get('/service-areas', (req, res) => render(res, 'areas', {
+  title: 'Service Areas | South Shore & Cape Cod Canal Demolition | Travers Demolition',
+  description: `Travers Demolition serves ${towns.length} towns from Bourne to Hingham — Plymouth, Kingston, Duxbury, Marshfield, Pembroke, Hanover, Norwell, Scituate and more.`,
+  breadcrumbs: [{ name: 'Service Areas', url: '/service-areas' }],
 }));
-app.get('/areas/:slug',(req,res,next)=>{
-  const town=towns.find(t=>t.slug===req.params.slug); if(!town)return next();
-  page(res,'area',{town,title:`Demolition Project Inquiries in ${town.name}, MA | Travers Demolition`,description:`Talk to Travers Demolition about residential demolition, commercial tear-outs, pool removal, concrete removal, and excavation projects in ${town.name}, MA.`});
+
+app.get('/service-areas/:town', (req, res, next) => {
+  const town = towns.find((t) => t.slug === req.params.town);
+  if (!town) return next();
+  const c = townHub(town);
+  render(res, 'town', {
+    town, c, title: c.title, description: c.meta,
+    nearby: town.nearby.map((s) => towns.find((t) => t.slug === s)).filter(Boolean),
+    breadcrumbs: [{ name: 'Service Areas', url: '/service-areas' }, { name: `${town.name}, MA`, url: townUrl(town) }],
+  });
 });
-app.get('/insights',(req,res)=>page(res,'insights',{
-  title:'Demolition Planning Guides | Travers Demolition',
-  description:'Helpful demolition, excavation, and pool-removal planning guides for South Shore property owners and contractors.'
+
+app.get('/articles', (req, res) => render(res, 'articles', {
+  title: 'Demolition Planning Guides | Travers Demolition',
+  description: 'Plain-English guides to demolition permits, pool removal, teardown prep and site work for South Shore homeowners, builders and property owners.',
+  breadcrumbs: [{ name: 'Articles', url: '/articles' }],
 }));
-app.get('/insights/:slug',(req,res,next)=>{
-  const article=articles.find(a=>a.slug===req.params.slug);if(!article)return next();
-  page(res,'article',{article,title:`${article.title} | Travers Demolition`,description:article.summary});
+
+app.get('/articles/:slug', (req, res, next) => {
+  const article = articles.find((a) => a.slug === req.params.slug);
+  if (!article) return next();
+  render(res, 'article', {
+    article, title: article.metaTitle, description: article.meta, ogImage: article.img, ogType: 'article',
+    breadcrumbs: [{ name: 'Articles', url: '/articles' }, { name: article.category, url: artUrl(article) }],
+  });
 });
-app.get('/contact',(req,res)=>page(res,'contact',{
-  title:'Request a Demolition Estimate | Travers Demolition',
-  description:'Tell us about your South Shore demolition, pool removal, concrete removal, or excavation project.'
+
+app.get('/about', (req, res) => render(res, 'about', {
+  title: `About Travers Demolition | A Division of Travers Group | Bourne, MA`,
+  description: `Travers Demolition is the demolition division of Travers Group — family-owned in Bourne, MA for ${biz.years} years, serving the South Shore and Cape Cod Canal.`,
+  breadcrumbs: [{ name: 'About', url: '/about' }],
 }));
-const leadHits=new Map();
-app.post('/api/lead',async(req,res)=>{
-  const b=req.body||{};
-  if(b.company_website)return res.status(200).json({ok:true});
-  const clean=(s,n=250)=>String(s||'').trim().slice(0,n);
-  const name=clean(b.name,90), phone=clean(b.phone,30), email=clean(b.email,120);
-  if(!name||phone.replace(/\D/g,'').length<10)return res.status(400).json({ok:false,error:'Please add your name and a valid phone number.'});
-  const ip=req.ip,now=Date.now(),list=(leadHits.get(ip)||[]).filter(t=>now-t<900000);list.push(now);leadHits.set(ip,list);
-  if(list.length>6)return res.status(429).json({ok:false,error:'Too many submissions. Please call us instead.'});
-  if(leadHits.size>2000)leadHits.clear();
-  // Mockup mode: no false claim of delivery. Configure GHL_API and LOCATION_ID to activate.
-  const enabled=Boolean(process.env.GHL_API||process.env.GHL_PIT||process.env.GHL_WEBHOOK_URL) && Boolean(process.env.LOCATION_ID||process.env.GHL_LOCATION_ID||process.env.GHL_WEBHOOK_URL);
-  if(!enabled)return res.status(503).json({ok:false,error:'This is a preview form. Connect GoHighLevel in Railway before accepting real inquiries. Please call us for now.'});
-  const service=clean(b.service,80),town=clean(b.town,80);
-  const lead={name,phone,email,service,serviceName:service,town,address:clean(b.address,160),zip:clean(b.zip,12),message:clean(b.message,1400),contactPref:clean(b.contact_pref,30),page:clean(b.page,180)||req.headers.referer||'Standalone demolition site',urgent:false};
-  try {await sendLead(lead);res.json({ok:true});}
-  catch(err){console.error('Lead delivery failed:',err.message);res.status(502).json({ok:false,error:'The form could not be delivered. Please call us directly.'});}
+
+const CUSTOMER_TYPES = ['Homeowner', 'Contractor / builder', 'Property manager', 'Commercial owner', 'Developer', 'Real estate / estate sale'];
+app.get('/contact', (req, res) => render(res, 'contact', {
+  preService: services.some((s) => s.slug === req.query.service) ? req.query.service : '',
+  preTown: towns.some((t) => t.slug === req.query.town) ? req.query.town : '',
+  preType: CUSTOMER_TYPES.includes(req.query.type) ? req.query.type : (req.query.service === 'commercial-demolition' ? 'Contractor / builder' : 'Homeowner'),
+  title: 'Request a Demolition Estimate | Travers Demolition | (508) 888-9432',
+  description: 'Request a free demolition estimate — house, commercial, garage and shed, pool and concrete removal or site prep on the South Shore. Call (508) 888-9432.',
+  breadcrumbs: [{ name: 'Free Estimate', url: '/contact' }],
+}));
+
+// ---------- Leads -> GoHighLevel ----------
+const hits = new Map(); // simple per-IP limiter: 8 submissions / 15 min
+function limited(ip) {
+  const now = Date.now(), win = 15 * 60 * 1000;
+  const arr = (hits.get(ip) || []).filter((t) => now - t < win);
+  arr.push(now); hits.set(ip, arr);
+  if (hits.size > 5000) hits.clear();
+  return arr.length > 8;
+}
+const svcBySlug = Object.fromEntries(services.map((s) => [s.slug, s]));
+const townBySlug = Object.fromEntries(towns.map((t) => [t.slug, t]));
+app.post('/api/lead', async (req, res) => {
+  const b = req.body || {};
+  const wantsJson = (req.headers.accept || '').includes('application/json');
+  const done = () => (wantsJson ? res.json({ ok: true }) : res.redirect(303, '/contact?sent=1'));
+  const fail = (status, msg) => (wantsJson ? res.status(status).json({ ok: false, error: msg }) : res.status(status).send(msg));
+  if (b.company_website) return done(); // honeypot
+  if (limited(req.ip)) return fail(429, `Too many requests — please call ${biz.phone}.`);
+  const clean = (v, n = 200) => String(v || '').trim().slice(0, n);
+  const t = townBySlug[clean(b.town, 60)];
+  const lead = {
+    name: clean(b.name, 80), phone: clean(b.phone, 30), email: clean(b.email, 120), company: clean(b.company, 120),
+    address: clean(b.address, 160), zip: clean(b.zip, 10) || (t && t.zip) || '',
+    town: t ? t.name : clean(b.town, 60), service: clean(b.service, 60),
+    customerType: clean(b.customer_type, 60), timeline: clean(b.timeline, 120),
+    message: clean(b.message, 1500), page: clean(b.page, 300), contactPref: clean(b.contact_pref, 20),
+    urgent: false,
+  };
+  lead.serviceName = svcBySlug[lead.service] ? svcBySlug[lead.service].name : (lead.service || 'Not sure');
+  const digits = lead.phone.replace(/\D/g, '');
+  if (!lead.name || digits.length < 10) return fail(400, 'Please include your name and a 10-digit phone number.');
+  try {
+    await sendLead(lead);
+    console.log('lead ok', lead.service, lead.town, lead.customerType);
+    return done();
+  } catch (e) {
+    console.error('LEAD FAILED', e.message, JSON.stringify(lead));
+    return fail(502, `Sorry — we could not submit that. Please call ${biz.phone}.`);
+  }
 });
-app.get('/robots.txt',(req,res)=>res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${SITE_URL}/sitemap.xml\n`));
-app.get('/sitemap.xml',(req,res)=>{
-  const paths=['/','/services','/areas','/insights','/contact',...services.map(s=>`/services/${s.slug}`),...towns.map(t=>`/areas/${t.slug}`),...articles.map(a=>`/insights/${a.slug}`)];
-  const escaped=(s)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  res.type('application/xml').send('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+paths.map(p=>`<url><loc>${escaped(SITE_URL+p)}</loc></url>`).join('')+'</urlset>');
+
+// ---------- Redirects: old ChatGPT mockup URLs + strategy-doc /demolition paths ----------
+const legacy = {
+  '/insights': '/articles',
+  '/insights/pool-removal-planning-south-shore': '/articles/pool-removal-massachusetts',
+  '/insights/residential-demolition-estimate-checklist': '/articles/house-demolition-checklist',
+  '/areas': '/service-areas',
+  '/services/selective-interior': '/services/interior-demolition',
+  '/demolition': '/',
+};
+Object.entries(legacy).forEach(([from, to]) => app.get(from, (req, res) => res.redirect(301, to)));
+app.get('/areas/:town', (req, res) => res.redirect(301, `/service-areas/${req.params.town.replace(/-ma$/, '')}-ma`));
+app.get('/demolition/areas/:town', (req, res) => res.redirect(301, `/service-areas/${req.params.town.replace(/-ma$/, '')}-ma`));
+app.get('/demolition/articles/:slug', (req, res) => res.redirect(301, `/articles/${req.params.slug}`));
+app.get('/demolition/:slug', (req, res) => res.redirect(301, `/services/${req.params.slug}`));
+
+// ---------- SEO ----------
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 });
-app.use((req,res)=>res.status(404).render('404',{title:'Page Not Found | Travers Demolition',description:'This page could not be found.',canonical:SITE_URL+req.path}));
-if(require.main===module)app.listen(PORT,'0.0.0.0',()=>console.log(`Travers Demolition running on port ${PORT}`));
-module.exports=app;
+
+app.get('/sitemap.xml', (req, res) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = [
+    ['/', '1.0'], ['/services', '0.9'], ['/service-areas', '0.8'], ['/articles', '0.7'], ['/about', '0.5'], ['/contact', '0.8'],
+  ];
+  services.forEach((s) => urls.push([svcUrl(s), '0.9']));
+  towns.forEach((t) => urls.push([townUrl(t), t.priority ? '0.8' : '0.7']));
+  services.forEach((s) => towns.forEach((t) => urls.push([stUrl(s, t), t.priority ? '0.7' : '0.6'])));
+  articles.forEach((a) => urls.push([artUrl(a), '0.6', a.date]));
+  res.type('application/xml').send(
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    urls.map(([u, p, d]) => `  <url><loc>${SITE_URL}${u === '/' ? '' : u}</loc><lastmod>${d || today}</lastmod><priority>${p}</priority></url>`).join('\n') +
+    `\n</urlset>\n`
+  );
+});
+
+app.use((req, res) => res.status(404).render('404', {
+  title: 'Page not found | Travers Demolition', description: '', canonical: SITE_URL, breadcrumbs: [], noindex: true,
+}));
+
+if (require.main === module) app.listen(PORT, () => console.log(`Travers Demolition site on :${PORT}`));
+module.exports = app;

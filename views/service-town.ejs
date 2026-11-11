@@ -1,0 +1,99 @@
+<%- include('partials/head') %>
+<div class="subnav"><div class="wrap">
+  <strong><%= service.short %> · <%= town.name %></strong>
+  <a class="link" href="<%= svcUrl(service) %>">All <%= service.short %></a>
+  <a class="link" href="<%= townUrl(town) %>">Demolition in <%= town.name %></a>
+  <a class="btn btn-primary" href="/contact?service=<%= service.slug %>&town=<%= town.slug %>">Free estimate</a>
+</div></div>
+<main id="main">
+  <%- include('partials/crumbs') %>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow"><%= service.eyebrow %> · <%= town.name %>, MA</span>
+      <h1 class="h1"><%= c.h1 %></h1>
+      <p class="lede"><%= c.lead %></p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="/contact?service=<%= service.slug %>&town=<%= town.slug %>">Get a free estimate</a>
+        <a class="btn btn-ghost" href="<%= biz.phoneHref %>">Call <%= biz.phone %></a>
+      </div>
+    </div>
+    <div class="page-hero-media"><img src="<%= img(service.hero, 1800) %>" srcset="<%= srcset(service.hero) %>" sizes="100vw" alt="<%= service.name %> in <%= town.name %>, MA by Travers Demolition" fetchpriority="high"></div>
+  </section>
+
+  <section class="section">
+    <div class="narrow prose reveal">
+      <p><strong><%= service.name %> in <%= town.name %>.</strong> <%= c.local %></p>
+      <p><%= c.angle %> <%= service.intro[0] %></p>
+      <% if (town.villages.length) { %><p>We work all over <%= town.name %>, including <%= list(town.villages) %>. Want the bigger picture? See <a href="<%= townUrl(town) %>">all our demolition services in <%= town.name %></a> or <a href="/contact?service=<%= service.slug %>&town=<%= town.slug %>">request an estimate</a>.</p><% } %>
+    </div>
+    <div class="wrap mt-xl">
+      <div class="grid-4 reveal">
+        <% service.includes.forEach((x, i) => { %>
+        <div class="card bordered"><span class="num">0<%= i + 1 %></span><h3><%= x.name %></h3><p><%= x.text %></p></div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="feature">
+        <div class="feature-copy reveal">
+          <span class="eyebrow">Planning a project in <%= town.name %></span>
+          <h2 class="h3">What to line up before we start.</h2>
+          <ul class="spec-list mt">
+            <li class="spec-compact"><b>Permit</b><span>Demolition and building permits come from the <%= town.name %> Building Department. Older structures may need historical review first.</span></li>
+            <li class="spec-compact"><b>Utilities</b><span>Electric, gas, water and sewer shut off and capped by the providers before any structure comes down.</span></li>
+            <li class="spec-compact"><b>Notices & inspections</b><span>Asbestos inspection and MassDEP notice at least 10 working days ahead for most building demolition.</span></li>
+            <li class="spec-compact"><b>Dig Safe</b><span>A Dig Safe ticket 72 hours ahead of any excavation — we file it for our digs.</span></li>
+          </ul>
+          <p class="muted mt" style="font-size:15px">Every job is different — we confirm exactly what yours needs during the site walk.</p>
+        </div>
+        <div class="feature-media reveal"><img src="<%= img(service.gallery[1], 1200) %>" srcset="<%= srcset(service.gallery[1]) %>" sizes="(max-width: 860px) 100vw, 50vw" loading="lazy" decoding="async" alt="<%= service.name %> project near <%= town.name %>, MA"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal"><span class="eyebrow">Our work</span><h2 class="h2"><%= service.short %> projects near <%= town.name %>.</h2></div>
+      <div class="mt-l reveal"><%- include('partials/gallery', { items: service.gallery.slice(0, 6), alt: service.name + ' near ' + town.name + ', MA' }) %></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="narrow">
+      <div class="reveal"><span class="eyebrow">FAQ</span><h2 class="h2" style="margin-top:14px"><%= service.short %> in <%= town.name %>: FAQ</h2></div>
+      <div class="mt-l reveal"><%- include('partials/faq', { faqs: c.faqs }) %></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal"><span class="eyebrow">More in <%= town.name %></span><h2 class="h2">Other demolition services in <%= town.name %>.</h2></div>
+      <div class="mt-l reveal"><%- include('partials/service-links', { town, only: service.related }) %></div>
+      <div class="chips mt-l reveal">
+        <% services.filter(s => s.slug !== service.slug && !service.related.includes(s.slug)).forEach(s => { %><a class="chip" href="<%= stUrl(s, town) %>"><%= s.short %> in <%= town.name %></a><% }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="section-head reveal"><span class="eyebrow">Nearby</span><h2 class="h2"><%= service.short %> in nearby towns.</h2></div>
+      <div class="chips mt-l reveal">
+        <% c.nearby.forEach(t => { %><a class="chip" href="<%= stUrl(service, t) %>"><%= service.short %> in <%= t.name %></a><% }) %>
+        <a class="chip home" href="<%= svcUrl(service) %>#areas">All <%= service.short %> areas ›</a>
+      </div>
+    </div>
+  </section>
+
+  <script type="application/ld+json"><%- JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Service', serviceType: service.name, name: c.h1,
+    description: c.meta, url: SITE_URL + stUrl(service, town),
+    provider: { '@id': SITE_URL + '/#business' },
+    areaServed: { '@type': 'City', name: town.name + ', MA', containedInPlace: { '@type': 'State', name: 'Massachusetts' } },
+  }) %></script>
+  <%- include('partials/cta', { ctaTitle: service.short + ' in ' + town.name + ', done right.', ctaQuery: '?service=' + service.slug + '&town=' + town.slug }) %>
+</main>
+<%- include('partials/footer') %>

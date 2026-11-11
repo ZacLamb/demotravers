@@ -1,0 +1,88 @@
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand" href="/"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="15" width="10" height="7" rx="1.2" fill="#1d1d1f"/><rect x="13" y="15" width="10" height="7" rx="1.2" fill="#1d1d1f"/><rect x="6" y="7" width="12" height="7" rx="1.2" fill="#b5551b"/><path d="M12 1.5 18.5 6h-13z" fill="#1d1d1f"/></svg><span>TRAVERS <small>DEMOLITION</small></span></a>
+        <p>Residential and light commercial demolition, pool and concrete removal and site prep across <%= biz.region %>. A division of <a href="<%= biz.parentUrl %>" rel="noopener">Travers Group</a> — family-owned for <%= biz.years %> years.</p>
+        <p><a class="phone" href="<%= biz.phoneHref %>"><%= biz.phone %></a><br>
+        <a href="mailto:<%= biz.email %>"><%= biz.email %></a><br>
+        <%= biz.street %>, <%= biz.city %>, <%= biz.state %> <%= biz.zip %></p>
+        <p><a href="<%= biz.facebook %>" rel="noopener" target="_blank">Facebook</a> · <a href="<%= biz.yelp %>" rel="noopener" target="_blank">Yelp</a></p>
+      </div>
+      <div>
+        <h4>Demolition Services</h4>
+        <ul><% services.forEach(s => { %><li><a href="<%= svcUrl(s) %>"><%= s.name %></a></li><% }) %></ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/services/commercial-demolition#bid">Contractor Bid Requests</a></li>
+          <li><a href="/articles">Articles</a></li>
+          <li><a href="/service-areas">Service Areas</a></li>
+          <li><a href="/contact">Free Estimate</a></li>
+          <li><a href="<%= biz.parentUrl %>" rel="noopener">Travers Group ›</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Guides</h4>
+        <ul><% articles.forEach(a => { %><li><a href="<%= artUrl(a) %>"><%= a.category %></a></li><% }) %></ul>
+      </div>
+      <div>
+        <h4>Towns We Serve</h4>
+        <ul class="footer-towns"><% towns.forEach(t => { %><li><a href="<%= townUrl(t) %>">Demolition <%= t.name %></a></li><% }) %></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <%= year %> <%= biz.legalName %>. Travers Demolition is a division of Travers Group.</span>
+      <span>House Demolition · Commercial Demo · Pool Removal · Concrete Removal · Site Prep</span>
+    </div>
+  </div>
+</footer>
+<nav class="callbar" aria-label="Quick contact">
+  <a href="<%= biz.phoneHref %>">Call Now</a>
+  <a href="/contact">Free Estimate</a>
+</nav>
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lb-close" aria-label="Close">×</button>
+  <button class="lb-prev" aria-label="Previous">‹</button>
+  <img alt="">
+  <button class="lb-next" aria-label="Next">›</button>
+</div>
+<!-- Quick contact form, available from the header on every page. -->
+<div class="contact-modal" id="header-contact-dialog" role="dialog" aria-modal="true" aria-labelledby="header-contact-title" aria-hidden="true" hidden>
+  <div class="contact-modal__backdrop" data-close-contact></div>
+  <div class="contact-modal__panel" role="document" tabindex="-1">
+    <button class="contact-modal__close" type="button" data-close-contact aria-label="Close contact form">&times;</button>
+    <div class="contact-modal__heading">
+      <span class="eyebrow">Get in touch</span>
+      <h2 id="header-contact-title">What needs to come down?</h2>
+      <p>Tell us a little about the project and we’ll call you back to set up a site visit.</p>
+    </div>
+    <form class="leadform contact-modal__form" method="post" action="/api/lead" novalidate>
+      <input type="hidden" name="page" value="header-quick-contact">
+      <div class="hp" aria-hidden="true"><label>Website <input name="company_website" tabindex="-1" autocomplete="off"></label></div>
+      <div class="fld-row">
+        <label class="fld"><span>Your name *</span><input name="name" autocomplete="name" required></label>
+        <label class="fld"><span>Phone number *</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      </div>
+      <label class="fld"><span>Email <em>(optional)</em></span><input name="email" type="email" autocomplete="email"></label>
+      <div class="fld-row">
+        <label class="fld"><span>Project type</span><select name="service"><option value="">Not sure yet</option><% services.forEach(s => { %><option value="<%= s.slug %>"><%= s.name %></option><% }) %></select></label>
+        <label class="fld"><span>Town</span><select name="town"><option value="">Select your town</option><% towns.forEach(t => { %><option value="<%= t.slug %>"><%= t.name %></option><% }) %><option value="Other">Other</option></select></label>
+      </div>
+      <label class="fld"><span>Project details</span><textarea name="message" rows="3" placeholder="What needs to come down, and what’s going in next?"></textarea></label>
+      <button class="btn btn-primary leadform__btn" type="submit">Send my request</button>
+      <p class="leadform__msg" role="status" aria-live="polite"></p>
+      <p class="leadform__fine">By submitting, you agree to be contacted by Travers Demolition (Travers Group) about your request by phone, text or email. Msg &amp; data rates may apply. Reply STOP to opt out.</p>
+    </form>
+    <div class="leadform__done" hidden role="status" aria-live="polite">
+      <h3 class="leadform__title">Thanks — we got it!</h3>
+      <p>We’ll be in touch shortly. Have photos? Text them to <a href="sms:+15088889432"><%= biz.phone %></a>.</p>
+      <button class="btn btn-dark contact-modal__done-close" type="button" data-close-contact>Close</button>
+    </div>
+  </div>
+</div>
+<script src="/js/site.js?v=3" defer></script>
+</body>
+</html>

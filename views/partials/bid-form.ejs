@@ -1,0 +1,32 @@
+<div class="form-shell">
+  <form class="leadform" method="post" action="/api/lead" novalidate>
+    <h3 class="leadform__title">Request a bid</h3>
+    <p class="leadform__sub">Send the scope and we’ll come back with a written number and schedule.</p>
+    <input type="hidden" name="page" value="<%= typeof pagePath !== 'undefined' ? pagePath : '/services/commercial-demolition' %>#bid">
+    <input type="hidden" name="service" value="commercial-demolition">
+    <input type="hidden" name="customer_type" value="Contractor / developer (bid request)">
+    <div class="hp" aria-hidden="true"><label>Website <input name="company_website" tabindex="-1" autocomplete="off"></label></div>
+    <div class="fld-row">
+      <label class="fld"><span>Your name</span><input name="name" autocomplete="name" required></label>
+      <label class="fld"><span>Company</span><input name="company" autocomplete="organization"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld"><span>Phone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      <label class="fld"><span>Email</span><input name="email" type="email" autocomplete="email"></label>
+    </div>
+    <div class="fld-row">
+      <label class="fld"><span>Project address</span><input name="address"></label>
+      <label class="fld"><span>Town</span>
+        <select name="town"><option value="">Select town</option><% towns.forEach(t => { %><option value="<%= t.slug %>"><%= t.name %></option><% }) %><option value="Other">Other</option></select></label>
+    </div>
+    <label class="fld"><span>Bid due / target start <em>(optional)</em></span><input name="timeline" placeholder="e.g. bids due Dec 4, demo early January"></label>
+    <label class="fld"><span>Scope</span><textarea name="message" rows="4" placeholder="Structure type and size, what stays, haul-off, site prep — and a link to plans if you have one."></textarea></label>
+    <button class="btn btn-primary leadform__btn" type="submit">Send bid request</button>
+    <p class="leadform__msg" role="status" aria-live="polite"></p>
+    <p class="leadform__fine">Plans too big to link? Email them to <a href="mailto:<%= biz.email %>"><%= biz.email %></a> with the project address in the subject.</p>
+  </form>
+  <div class="leadform__done" hidden>
+    <h3 class="leadform__title">Bid request received.</h3>
+    <p>We’ll review the scope and get back to you. Need it faster? Call <a href="<%= biz.phoneHref %>"><%= biz.phone %></a>.</p>
+  </div>
+</div>

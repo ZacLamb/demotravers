@@ -1,33 +1,35 @@
-# Travers Demolition — Standalone Website Mockup
+# Travers Demolition — a division of Travers Group
 
-A new, independent GitHub/Railway-ready Express website for **Travers Demolition, a division of Travers Group**. It is separate from the main Travers website and doesn't modify its code.
+Node/Express + EJS site built on the same design system as traversgroupma.com (repo `ZacLamb/Travers`).
+**142 pages:** home, about, contact, services hub, 8 service pages, 14 town hubs, 112 service×town pages, articles hub + articles.
 
-## Start locally
+## Deploy (Railway)
+1. New service from this repo — `npm start` is auto-detected.
+2. Variables:
+   - `SITE_URL` — public URL, e.g. `https://demolition.traversgroupma.com` (canonicals, sitemap, schema)
+   - `GHL_API` — Private Integration token (contacts.write, contacts.readonly, locations/customFields.readonly + .write, opportunities.write)
+   - `LOCATION_ID` — the Travers Group sub-account ID
+   - `GHL_PIPELINE_ID` + `GHL_STAGE_ID` — optional: drop every lead into the Demolition pipeline's "New lead" stage
+   - `CANONICAL_HOST` — optional: once the custom domain is live, 301 the railway.app host to it
+   - `GA_ID` — optional GA4 measurement ID (fires `generate_lead` on submit)
+3. Add the custom domain, then submit `/sitemap.xml` in Search Console.
 
-```bash
-npm install
-npm start
-```
+## Leads
+Every form posts to `/api/lead` → `lib/ghl.js` (same integration as the main Travers site), but tracked as its own channel:
+source `Website - Travers Demolition`, tags `website lead`, `demolition lead`, `web division: demolition`, `web service: <slug>`, `web town: <name>`, `web customer: <type>`,
+custom fields **Website Customer Type, Website Project Timeline, Website Division** (+ the existing Website * fields), and a note with the full submission.
+Suggested GHL pipeline: New lead → Contacted → Site visit → Estimate sent → Won / Lost.
+Forms: quick contact (header), full estimate (`/contact?service=<slug>&town=<slug>`), contractor bid request (`/services/commercial-demolition#bid`).
 
-Visit `http://localhost:3000`. Test with `npm test`.
+## Editing
+- `data/business.js` — phone, email, address, coverage line
+- `data/services.js` — the 8 services (copy, includes, FAQs, images). **Confirm pool removal, concrete removal and excavation with Travers.**
+- `data/towns.js` — towns, villages and the town-specific demolition notes that make each local page unique
+- `data/compose.js` — service×town page templates
+- `data/articles.js` — SEO articles (2/month; upcoming topics listed at the top of the file)
 
-## Deploy to GitHub and Railway
+## Old URLs
+The ChatGPT mockup URLs (`/insights/*`, `/areas/*`, `/services/selective-interior`) and the strategy doc's `/demolition/*` paths all 301 to their new equivalents.
 
-1. Create a **new** GitHub repository (for example `travers-demolition`).
-2. Upload **the contents of this ZIP** to the repository root (not a nested folder).
-3. In Railway create a new service from the repo, with `npm start` as the start command (usually auto-detected).
-4. Test using Railway's generated `*.up.railway.app` domain first.
-5. Add a new custom domain only when you choose one. Do not change the existing Travers Group DNS for this preview.
-6. Set `SITE_URL` to the deployed public HTTPS URL for accurate sitemap/canonical links.
-
-### Lead forms
-
-The form intentionally refuses to claim success until CRM delivery is configured. For GoHighLevel set `GHL_API` and `LOCATION_ID` in Railway for the same integration approach as the existing Travers website, or provide `GHL_WEBHOOK_URL` if the library supports that setup. Test with an actual lead before promoting the site.
-
-### Content program ($100/month proposal)
-
-The first two editorial drafts live in `data/articles.js`. Add two fact-checked new articles per month, with distinct original information and internal links. The site automatically includes new entries in the article index and sitemap. Avoid generating duplicate town pages at scale: use verified local information, real project proof, and service-specific examples.
-
-### Important
-
-Mockup copy is written as an invitation to discuss project suitability, not a guarantee of licenses, permitting, or service availability. Verify all actual demolition capabilities, compliance, lead routing and imagery licenses before public marketing. A background photograph is loaded from Unsplash and requires network connectivity; replace it with licensed Travers project imagery when available.
+## Test
+`npm start` then `npm test` — crawls every internal link, checks the sitemap and redirects.
