@@ -1,9 +1,18 @@
 {
   "name": "travers-demolition",
   "version": "1.0.0",
-  "private": true,
-  "description": "Standalone Travers Demolition website mockup with service pages, location pages, and SEO articles",
-  "scripts": {"start": "node server.js", "dev": "node --watch server.js", "test": "node scripts/smoke-test.js"},
-  "engines": {"node": ">=18"},
-  "dependencies": {"express": "^4.21.2", "ejs": "^3.1.10", "compression": "^1.7.4"}
+  "description": "Travers Demolition \u2014 a division of Travers Group. Residential & light commercial demolition, South Shore MA",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node scripts/crawl.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
+  }
 }

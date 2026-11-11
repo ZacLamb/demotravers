@@ -1,9 +1,163 @@
-<%- include('head') %>
-<main><section class="hero"><div class="hero-photo" aria-hidden="true"></div><div class="hero-grid" aria-hidden="true"></div><div class="wrap hero-inner"><div class="hero-copy"><div class="section-index"><span class="index-line"></span> DEMOLITION • EXCAVATION • SITE WORK</div><h1>MAKE WAY<br>FOR <em>WHAT'S</em><br><em>NEXT.</em></h1><p>Residential and commercial demolition, pool removal, excavation and site preparation for projects across the South Shore of Massachusetts.</p><div class="hero-actions"><a class="btn btn-orange" href="/contact">REQUEST AN ESTIMATE <span aria-hidden="true">↗</span></a><a class="btn btn-outline" href="/services">EXPLORE SERVICES <span aria-hidden="true">↘</span></a></div><div class="hero-trust"><span><b>01</b> SOUTH SHORE FOCUSED</span><span><b>02</b> RESIDENTIAL + COMMERCIAL</span><span><b>03</b> BACKED BY TRAVERS GROUP</span></div></div><div class="hero-side"><div class="hero-side-top">THE WORK<br>BEFORE THE WORK.</div><div class="hero-vertical">SITE PREPARATION / DEMOLITION</div><div class="hero-side-bottom">A DIVISION OF TRAVERS GROUP <span>↗</span></div></div></div></section>
-<section class="ticker"><div class="wrap"><span>STRUCTURE REMOVAL</span><span class="ticker-star">✳</span><span>POOL DEMOLITION</span><span class="ticker-star">✳</span><span>SITE CLEARING</span><span class="ticker-star">✳</span><span>CONCRETE REMOVAL</span><span class="ticker-star">✳</span><span>EXCAVATION</span></div></section>
-<section class="section section-services"><div class="wrap"><div class="section-heading"><div><span class="eyebrow">01 / OUR CAPABILITIES</span><h2>Built to <em>clear the way.</em></h2></div><p>From a backyard pool removal to commercial site preparation, every project begins with a detailed conversation about scope, access, and next steps.</p></div><div class="service-grid"><% services.forEach((s,i)=>{ %><a class="service-tile" href="/services/<%= s.slug %>"><div class="service-top"><span class="tile-number"><%= String(i+1).padStart(2,'0') %> / 06</span><span class="tile-arrow">↗</span></div><div class="tile-graphic graphic-<%=i%6%>"><span class="geo-rect"></span><span class="geo-stripe"></span></div><h3><%= s.name %></h3><p><%= s.intro %></p><span class="tile-link">EXPLORE SERVICE <span>→</span></span></a><% }) %></div></div></section>
-<section class="section dark-panel"><div class="wrap process-layout"><div><span class="eyebrow">02 / WHO WE WORK WITH</span><h2>THE RIGHT START<br>FOR A <em>BETTER BUILD.</em></h2><p>Whether you're clearing a lot, removing an unused pool, or planning a commercial renovation, the first step is understanding the work.</p><a class="btn btn-orange" href="/contact">DISCUSS YOUR PROJECT ↗</a></div><div class="audience-list"><div><span>01</span><h3>HOMEOWNERS</h3><p>House, garage, pool, and selective removal inquiries.</p></div><div><span>02</span><h3>GENERAL CONTRACTORS</h3><p>Jobsite coordination, removal scopes, and site preparation.</p></div><div><span>03</span><h3>PROPERTY TEAMS</h3><p>Commercial renovations, phased tear-outs, and access planning.</p></div></div></div></section>
-<section class="section"><div class="wrap"><div class="section-heading"><div><span class="eyebrow">03 / WHERE WE WORK</span><h2>Focused on the <em>South Shore.</em></h2></div><p>Local project knowledge matters. We start with a manageable set of priority communities and review each project individually.</p></div><div class="town-grid"><% towns.forEach((t,i)=>{ %><a class="town-tile" href="/areas/<%=t.slug%>"><span class="town-index"><%=String(i+1).padStart(2,'0')%></span><strong><%=t.name%></strong><span>MA ↗</span></a><% }) %></div><a href="/areas" class="text-arrow">VIEW ALL SERVICE AREAS <span>↗</span></a></div></section>
-<section class="section insights-preview"><div class="wrap"><div class="section-heading"><div><span class="eyebrow">04 / FIELD NOTES</span><h2>Know before <em>you dig.</em></h2></div><a href="/insights" class="text-arrow">ALL PLANNING GUIDES <span>↗</span></a></div><div class="article-grid"><% articles.forEach((a,i)=>{ %><a href="/insights/<%=a.slug%>" class="article-card"><div class="article-visual article-visual-<%=i%2%>"><span>FIELD NOTE / <%=String(i+1).padStart(2,'0')%></span><div class="article-shape"></div></div><div class="article-details"><span><%=a.category.toUpperCase()%></span><h3><%=a.title%></h3><p><%=a.summary%></p><span class="read-link">READ GUIDE ↗</span></div></a><% }) %></div></div></section>
-<section class="section contact-band"><div class="wrap contact-layout"><div><span class="eyebrow">05 / START YOUR PROJECT</span><h2>Ready to <em>move forward?</em></h2><p>Tell us what you want removed and where the project is located. Our team will review the information and follow up.</p><a class="large-phone" href="<%=phoneLink%>"><%=phone%> ↗</a></div><%- include('form') %></div></section>
-</main><%- include('footer') %>
+<%- include('partials/head') %>
+<main id="main">
+  <section class="hero on-dark">
+    <div class="hero-media"><img src="<%= img(IMG.hero, 1800) %>" srcset="<%= srcset(IMG.hero) %>" sizes="100vw" alt="Demolition project by Travers Demolition, a division of Travers Group, South Shore MA" fetchpriority="high"></div>
+    <div class="wrap">
+      <span class="eyebrow">Travers Demolition · A division of Travers Group</span>
+      <h1 class="display">Make way for what’s next.</h1>
+      <p class="lede">House teardowns, light commercial demolition, pool and concrete removal and site prep — across the South Shore and the Cape Cod Canal, backed by <%= biz.years %> years of Travers Group.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="/contact">Request a demolition estimate</a>
+        <a class="btn btn-ghost" href="<%= biz.phoneHref %>">Call <%= biz.phone %></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="specs reveal">
+        <div class="spec"><b><%= biz.years %></b><span>Years, same family</span></div>
+        <div class="spec"><b><%= biz.clients %></b><span>Travers Group clients</span></div>
+        <div class="spec"><b>100%</b><span>Jobs with debris hauled</span></div>
+        <div class="spec"><b><%= towns.length %></b><span>Towns served</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:40px">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">What we take down</span>
+        <h2 class="h2">Every teardown. One accountable crew.</h2>
+        <p class="lede">Residential and light commercial demolition for homeowners, builders and property managers — with haul-off and site prep built in.</p>
+      </div>
+      <div class="tiles mt-l">
+        <% const darkSet = [0, 3, 6]; services.forEach((s, i) => { const wide = i === 0 || i === services.length - 1; %>
+        <a class="tile reveal <%= wide ? 'wide' : '' %> <%= darkSet.includes(i) ? 'dark' : '' %>" href="<%= svcUrl(s) %>">
+          <div class="tile-copy">
+            <h3><%= s.name %></h3>
+            <p><%= s.cardLine %></p>
+            <div class="links-row"><span class="chev">Learn more</span></div>
+          </div>
+          <div class="tile-img"><img src="<%= img(s.card, 1200) %>" srcset="<%= srcset(s.card) %>" sizes="(max-width: 860px) 100vw, <%= wide ? '100vw' : '50vw' %>" loading="lazy" decoding="async" alt="<%= s.name %> by Travers Demolition, South Shore MA"></div>
+        </a>
+        <% }) %>
+        <a class="tile wide reveal" href="/service-areas" style="justify-content:center;min-height:auto">
+          <div class="tile-copy">
+            <h3><%= biz.coverage %>.</h3>
+            <p><%= towns.length %> towns across the South Shore, Plymouth County and the Cape Cod Canal.</p>
+            <div class="links-row"><span class="chev">Find your town</span></div>
+          </div>
+          <div class="tile-copy" style="padding-top:0">
+            <div class="chips" style="justify-content:center">
+              <% towns.forEach(t => { %><span class="chip"><%= t.name %></span><% }) %>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Who we work with</span>
+        <h2 class="h2">The right start for a better build.</h2>
+        <p class="lede">Different customers need different things from a demolition contractor. Here’s what we bring to each.</p>
+      </div>
+      <div class="grid-3 mt-l reveal">
+        <div class="card audience">
+          <span class="num">01 · Homeowners</span>
+          <h3>Teardowns, garages, pools and decks.</h3>
+          <p>A straight answer on what your project needs, one crew from teardown to clean yard, and no dumpster sitting in the driveway.</p>
+          <a class="more chev" href="/services/residential-demolition">Residential demolition</a>
+        </div>
+        <div class="card audience">
+          <span class="num">02 · Builders & GCs</span>
+          <h3>A demo sub that reads the schedule.</h3>
+          <p>Send drawings or a scope sheet and get a written bid back. We show up on the day, haul everything and hand you a graded lot.</p>
+          <a class="more chev" href="/services/commercial-demolition#bid">Request a bid</a>
+        </div>
+        <div class="card audience">
+          <span class="num">03 · Property & commercial owners</span>
+          <h3>Light commercial, done around your business.</h3>
+          <p>Small buildings, tenant tear-outs, old pads and hardscape — planned around tenants, traffic and safety zones.</p>
+          <a class="more chev" href="/services/commercial-demolition">Commercial demolition</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="feature">
+        <div class="feature-media reveal"><img src="<%= img(IMG.feature1, 1200) %>" srcset="<%= srcset(IMG.feature1) %>" sizes="(max-width: 860px) 100vw, 50vw" loading="lazy" decoding="async" alt="Site cleared and graded after demolition by Travers Demolition"></div>
+        <div class="feature-copy reveal">
+          <span class="eyebrow">Why Travers Demolition</span>
+          <h2 class="h2" style="margin-top:14px">Demolition done carefully.</h2>
+          <p>Anyone can knock a building down. The job is getting it down without damaging what’s staying, getting every load off the property and handing back a site that’s actually ready for the next trade. That’s what four decades of Travers Group work on Cape Cod and South Shore properties has taught us.</p>
+          <div class="links-row mt"><a class="chev" href="/about">About the division</a><a class="chev" href="/contact">Get an estimate</a></div>
+        </div>
+      </div>
+      <ul class="spec-list mt-xl reveal">
+        <% why.forEach(w => { %><li><b><%= w.t %></b><span><%= w.d %></span></li><% }) %>
+      </ul>
+    </div>
+  </section>
+
+  <%- include('partials/process') %>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Recent work</span>
+        <h2 class="h2">Cleared, hauled and ready.</h2>
+      </div>
+      <div class="mt-l reveal">
+        <%- include('partials/gallery', { items: GALLERY.concat([IMG.feature2]), alt: 'Demolition and site clearing on the South Shore' }) %>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Service areas</span>
+        <h2 class="h2">Local to the South Shore.</h2>
+        <p class="lede">Based on Cranberry Highway in Bourne, we take on demolition from the Cape Cod Canal up through Plymouth, Duxbury, Marshfield and Hingham.</p>
+      </div>
+      <% regions.forEach(r => { const list_ = towns.filter(t => t.region === r); %>
+      <h3 class="region-label"><%= r %></h3>
+      <div class="town-grid reveal">
+        <% list_.forEach(t => { %><a href="<%= townUrl(t) %>"><%= t.name %>, MA</a><% }) %>
+      </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Planning guides</span>
+        <h2 class="h2">Know before you demo.</h2>
+      </div>
+      <div class="grid-2 mt-l reveal">
+        <% articles.forEach(a => { %>
+        <a class="card-img card-link" href="<%= artUrl(a) %>">
+          <img src="<%= img(a.img, 800) %>" loading="lazy" decoding="async" alt="<%= a.title %>">
+          <div class="card-body">
+            <span class="num-label"><%= a.category %> · <%= a.readMins %> min read</span>
+            <h3 style="font-size:23px;margin-top:10px"><%= a.title %></h3>
+            <p class="muted mt-s" style="font-size:16px"><%= a.summary %></p>
+            <span class="more chev">Read the guide</span>
+          </div>
+        </a>
+        <% }) %>
+      </div>
+      <div class="links-row mt-l"><a class="chev" href="/articles">All planning guides</a></div>
+    </div>
+  </section>
+
+  <%- include('partials/cta') %>
+</main>
+<%- include('partials/footer') %>

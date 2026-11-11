@@ -1,1 +1,32 @@
-<%-include('head')%><main><section class="page-hero"><div class="wrap"><span class="eyebrow">SOUTH SHORE / SERVICE AREAS</span><h1>Local projects.<br><em>Serious planning.</em></h1><p>Priority South Shore communities for demolition, excavation, concrete removal and site preparation inquiries.</p></div></section><section class="section"><div class="wrap town-grid"><%towns.forEach((t,i)=>{%><a class="town-tile" href="/areas/<%=t.slug%>"><span class="town-index">0<%=i+1%></span><strong><%=t.name%></strong><span>MA ↗</span></a><%})%></div></section></main><%-include('footer')%>
+<%- include('partials/head') %>
+<main id="main">
+  <%- include('partials/crumbs') %>
+  <section class="page-hero" style="padding-bottom:20px">
+    <div class="wrap">
+      <span class="eyebrow">Service areas</span>
+      <h1 class="h1"><%= biz.coverage %>.</h1>
+      <p class="lede">Headquartered on Cranberry Highway in Bourne, Travers Demolition serves <%= towns.length %> towns across the South Shore, Plymouth County and the Cape Cod Canal.</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top:40px">
+    <div class="wrap">
+      <% regions.forEach(r => { const list_ = towns.filter(t => t.region === r); if (!list_.length) return; %>
+      <h2 class="region-label"><%= r %></h2>
+      <div class="grid-3 reveal">
+        <% list_.forEach(t => { %>
+        <div class="card bordered">
+          <h3><a href="<%= townUrl(t) %>" style="color:inherit">Demolition in <%= t.name %>, MA</a></h3>
+          <p><%= t.villages.slice(0, 4).join(' · ') %></p>
+          <p style="font-size:14px;line-height:1.9">
+            <% services.forEach(s => { %><a href="<%= stUrl(s, t) %>"><%= s.short %></a> &nbsp;<% }) %>
+          </p>
+          <a class="more chev" href="<%= townUrl(t) %>" style="display:inline-block;margin-top:10px;font-size:15px">All <%= t.name %> services</a>
+        </div>
+        <% }) %>
+      </div>
+      <% }) %>
+    </div>
+  </section>
+  <%- include('partials/cta', { ctaTitle: 'Don’t see your town? Ask us.', ctaText: 'Call or send your project details — if it’s within reach of Bourne and the South Shore, we’ll let you know quickly.' }) %>
+</main>
+<%- include('partials/footer') %>

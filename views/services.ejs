@@ -1,1 +1,27 @@
-<%- include('head') %><main><section class="page-hero"><div class="wrap"><span class="eyebrow">SERVICES / DEMOLITION DIVISION</span><h1>Clear the way <em>forward.</em></h1><p>From selective interior tear-outs to exterior demolition and excavation, explore the scope of work we can review for your South Shore project.</p></div></section><section class="section"><div class="wrap service-grid"><% services.forEach((s,i)=>{ %><a class="service-tile" href="/services/<%=s.slug%>"><span class="tile-number">0<%=i+1%> / 06</span><h3><%=s.name%></h3><p><%=s.intro%></p><span class="tile-link">EXPLORE SERVICE ↗</span></a><% }) %></div></section></main><%- include('footer') %>
+<%- include('partials/head') %>
+<main id="main">
+  <%- include('partials/crumbs') %>
+  <section class="page-hero" style="padding-bottom:20px">
+    <div class="wrap">
+      <span class="eyebrow">Demolition services</span>
+      <h1 class="h1">Everything that needs to come down.</h1>
+      <p class="lede">Residential and light commercial demolition, pool and concrete removal, excavation and site prep — with debris removal included on every job.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="/contact">Get a free estimate</a>
+        <a class="btn btn-ghost" href="/services/commercial-demolition#bid">Contractor bid request</a>
+      </div>
+    </div>
+  </section>
+  <section class="section" style="padding-top:60px">
+    <div class="wrap"><%- include('partials/service-links') %></div>
+  </section>
+  <%- include('partials/process') %>
+  <section class="section alt">
+    <div class="wrap">
+      <div class="section-head reveal"><span class="eyebrow">Why Travers Demolition</span><h2 class="h2">Demolition done carefully.</h2></div>
+      <ul class="spec-list mt-l reveal"><% why.forEach(w => { %><li><b><%= w.t %></b><span><%= w.d %></span></li><% }) %></ul>
+    </div>
+  </section>
+  <%- include('partials/cta') %>
+</main>
+<%- include('partials/footer') %>

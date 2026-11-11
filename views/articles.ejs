@@ -1,0 +1,30 @@
+<%- include('partials/head') %>
+<main id="main">
+  <%- include('partials/crumbs') %>
+  <section class="page-hero" style="padding-bottom:20px">
+    <div class="wrap">
+      <span class="eyebrow">Planning guides</span>
+      <h1 class="h1">Know before you demo.</h1>
+      <p class="lede">Straight answers on permits, prep and process for South Shore homeowners, builders and property owners planning a demolition.</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top:60px">
+    <div class="wrap">
+      <div class="grid-2">
+        <% articles.forEach(a => { %>
+        <a class="card-img card-link" href="<%= artUrl(a) %>">
+          <img src="<%= img(a.img, 800) %>" loading="lazy" decoding="async" alt="<%= a.title %>">
+          <div class="card-body">
+            <span class="num-label"><%= a.category %> · <%= a.readMins %> min read</span>
+            <h2 style="font-size:24px;margin-top:10px;line-height:1.2"><%= a.title %></h2>
+            <p class="muted mt-s" style="font-size:16px"><%= a.summary %></p>
+            <span class="more chev">Read the guide</span>
+          </div>
+        </a>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+  <%- include('partials/cta') %>
+</main>
+<%- include('partials/footer') %>

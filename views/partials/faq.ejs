@@ -1,0 +1,6 @@
+<div class="faq">
+  <% faqs.forEach(f => { %>
+  <details><summary><%= f.q %></summary><p><%= f.a %></p></details>
+  <% }) %>
+</div>
+<script type="application/ld+json"><%- JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }) %></script>

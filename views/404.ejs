@@ -1,1 +1,16 @@
-<%-include('head')%><main><section class="page-hero"><div class="wrap"><span class="eyebrow">404 / PAGE NOT FOUND</span><h1>Nothing to<br><em>demolish here.</em></h1><p>That page doesn't exist. Return to the homepage or explore our services.</p><a class="btn btn-orange" href="/">BACK HOME ↗</a></div></section></main><%-include('footer')%>
+<%- include('partials/head') %>
+<main id="main">
+  <section class="page-hero" style="padding-bottom:110px">
+    <div class="wrap">
+      <span class="eyebrow">404</span>
+      <h1 class="h1">This page has already been demolished.</h1>
+      <p class="lede">The page you’re looking for isn’t here. Try one of these instead.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="/">Home</a>
+        <a class="btn btn-ghost" href="/services">Demolition services</a>
+        <a class="btn btn-ghost" href="/contact">Free estimate</a>
+      </div>
+    </div>
+  </section>
+</main>
+<%- include('partials/footer') %>

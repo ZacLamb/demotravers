@@ -1,0 +1,11 @@
+<section class="cta on-dark blueprint">
+  <div class="wrap">
+    <span class="eyebrow">Free demolition estimates</span>
+    <h2 class="h2"><%= typeof ctaTitle !== 'undefined' && ctaTitle ? ctaTitle : 'Make way for what’s next.' %></h2>
+    <p class="lede"><%= typeof ctaText !== 'undefined' && ctaText ? ctaText : `Tell us what needs to come down. We’ll walk the property, lay out the permits and prep it needs, and give you a clear written estimate.` %></p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="/contact<%= typeof ctaQuery !== 'undefined' && ctaQuery ? ctaQuery : '' %>">Request a demolition estimate</a>
+      <a class="btn btn-ghost" href="<%= biz.phoneHref %>">Call <%= biz.phone %></a>
+    </div>
+  </div>
+</section>

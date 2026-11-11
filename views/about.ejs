@@ -1,0 +1,55 @@
+<%- include('partials/head') %>
+<main id="main">
+  <%- include('partials/crumbs') %>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">About the division</span>
+      <h1 class="h1">Forty-two years of Travers Group. One job: clear the way.</h1>
+      <p class="lede">Travers Demolition is the demolition division of Travers Group — the family-owned Bourne company that has been building patios, retaining walls and outdoor spaces from Cape Cod to the South Shore for <%= biz.years %> years.</p>
+    </div>
+    <div class="page-hero-media"><img src="<%= img(IMG.feature1, 1800) %>" srcset="<%= srcset(IMG.feature1) %>" sizes="100vw" alt="Travers Demolition site work on the South Shore" fetchpriority="high"></div>
+  </section>
+
+  <section class="section">
+    <div class="narrow prose reveal">
+      <p><strong>Why a demolition division.</strong> Demolition has always been part of what Travers Group does — old sheds before a new patio, a failing deck before a stone terrace, a tired cottage before a new home. Over the years more homeowners, builders and property managers started calling for demolition on its own, so we gave it its own crew focus, its own estimating and its own front door.</p>
+      <p><strong>What stays the same.</strong> The same family, the same equipment and the same standard: protect what’s staying, haul every load and leave a site that’s actually ready for the next trade. And because tree work, retaining walls and patios are all in-house at Travers Group, a demolition job doesn’t have to end at demolition day.</p>
+      <p><strong>Where we work.</strong> We’re based at <%= biz.street %> in <%= biz.city %> and take on demolition from the Cape Cod Canal north through Plymouth, Kingston, Duxbury, Marshfield, Pembroke, Hanover, Norwell, Scituate and Hingham. See the <a href="/service-areas">full service area</a>.</p>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="wrap">
+      <div class="specs reveal">
+        <div class="spec"><b><%= biz.years %></b><span>Years, same family</span></div>
+        <div class="spec"><b><%= biz.clients %></b><span>Travers Group clients</span></div>
+        <div class="spec"><b><%= services.length %></b><span>Demolition services</span></div>
+        <div class="spec"><b><%= towns.length %></b><span>Towns served</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="section-head reveal"><span class="eyebrow">How we work</span><h2 class="h2">What you can count on.</h2></div>
+      <ul class="spec-list mt-l reveal"><% why.forEach(w => { %><li><b><%= w.t %></b><span><%= w.d %></span></li><% }) %></ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="feature">
+        <div class="feature-media reveal"><img src="<%= img(IMG.card, 1200) %>" srcset="<%= srcset(IMG.card) %>" sizes="(max-width: 860px) 100vw, 50vw" loading="lazy" decoding="async" alt="Travers Group landscape construction work"></div>
+        <div class="feature-copy reveal">
+          <span class="eyebrow">After demolition</span>
+          <h2 class="h3">Need what comes next, too?</h2>
+          <p>Travers Group builds paver and stone patios, walkways and retaining walls, and handles tree removal and stump grinding. Plenty of our demolition customers keep the same crew for the finished project.</p>
+          <div class="links-row mt"><a class="chev" href="<%= biz.parentUrl %>" rel="noopener">Visit Travers Group</a><a class="chev" href="/contact">Get a demolition estimate</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%- include('partials/cta') %>
+</main>
+<%- include('partials/footer') %>

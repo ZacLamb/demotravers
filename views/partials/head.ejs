@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title><%= title %></title>
+<% if (description) { %><meta name="description" content="<%= description %>"><% } %>
+<% if (typeof noindex !== 'undefined' && noindex) { %><meta name="robots" content="noindex"><% } else { %><link rel="canonical" href="<%= canonical || SITE_URL %>"><% } %>
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="<%= typeof ogType !== 'undefined' ? ogType : 'website' %>">
+<meta property="og:site_name" content="Travers Demolition">
+<meta property="og:title" content="<%= title %>">
+<meta property="og:description" content="<%= description %>">
+<meta property="og:url" content="<%= canonical || SITE_URL %>">
+<meta property="og:image" content="<%= img(typeof ogImage !== 'undefined' && ogImage ? ogImage : IMG.hero, 1200) %>">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://images.leadconnectorhq.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css?v=5">
+<% if (GA_ID) { %><script async src="https://www.googletagmanager.com/gtag/js?id=<%= GA_ID %>"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<%= GA_ID %>');</script><% } %>
+<script type="application/ld+json"><%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': ['HomeAndConstructionBusiness', 'LocalBusiness'],
+  '@id': SITE_URL + '/#business',
+  name: biz.name,
+  alternateName: 'Travers Demolition — A Division of Travers Group',
+  legalName: biz.legalName,
+  url: SITE_URL,
+  telephone: '+1-508-888-9432',
+  email: biz.email,
+  image: img(IMG.hero, 1200),
+  logo: SITE_URL + '/img/logo.svg',
+  address: { '@type': 'PostalAddress', streetAddress: biz.street, addressLocality: biz.city, addressRegion: biz.state, postalCode: biz.zip, addressCountry: 'US' },
+  geo: { '@type': 'GeoCoordinates', latitude: biz.geo.lat, longitude: biz.geo.lng },
+  parentOrganization: { '@type': 'Organization', name: biz.parentName, url: biz.parentUrl },
+  areaServed: towns.map(t => ({ '@type': 'City', name: t.name + ', MA' })),
+  sameAs: [biz.parentUrl, biz.facebook, biz.yelp],
+  makesOffer: services.map(s => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.name, url: SITE_URL + svcUrl(s) } })),
+}) %></script>
+<% if (breadcrumbs && breadcrumbs.length) { %><script type="application/ld+json"><%- JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [{ name: 'Home', url: '/' }].concat(breadcrumbs).map((b, i) => ({ '@type': 'ListItem', position: i + 1, name: b.name, item: SITE_URL + (b.url === '/' ? '' : b.url) })),
+}) %></script><% } %>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="division-bar"><div class="wrap">
+  <span>A division of <strong>Travers Group</strong> · <%= biz.years %> years building &amp; clearing properties from Cape Cod to the South Shore</span>
+  <a href="<%= biz.parentUrl %>" rel="noopener">Tree service, patios &amp; walls at traversgroupma.com ›</a>
+</div></div>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Travers Demolition home">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="15" width="10" height="7" rx="1.2" fill="#1d1d1f"/><rect x="13" y="15" width="10" height="7" rx="1.2" fill="#1d1d1f"/><rect x="6" y="7" width="12" height="7" rx="1.2" fill="#b5551b"/><path d="M12 1.5 18.5 6h-13z" fill="#1d1d1f"/></svg>
+      <span>TRAVERS <small>DEMOLITION</small></span>
+    </a>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span></span><span></span></button>
+    <ul class="nav-links" id="navlinks">
+      <li class="has-menu"><a href="/services">Services</a>
+        <div class="menu">
+          <% services.forEach(s => { %><a href="<%= svcUrl(s) %>"><%= s.navLabel %><span><%= s.cardLine %></span></a><% }) %>
+          <hr><a href="/services">All demolition services</a>
+        </div>
+      </li>
+      <li class="has-menu"><a href="/service-areas">Service Areas</a>
+        <div class="menu">
+          <% towns.slice(0, 9).forEach(t => { %><a href="<%= townUrl(t) %>"><%= t.name %>, MA</a><% }) %>
+          <hr><a href="/service-areas">All <%= towns.length %> towns</a>
+        </div>
+      </li>
+      <li><a href="/services/commercial-demolition#bid">Contractors</a></li>
+      <li><a href="/articles">Articles</a></li>
+      <li><a href="/about">About</a></li>
+      <li><button type="button" class="nav-contact" data-open-contact aria-haspopup="dialog" aria-controls="header-contact-dialog">Contact Us</button></li>
+      <li><a class="nav-phone" href="<%= biz.phoneHref %>"><%= biz.phone %></a></li>
+      <li><a class="nav-cta" href="/contact">Free Estimate</a></li>
+    </ul>
+  </div>
+</header>

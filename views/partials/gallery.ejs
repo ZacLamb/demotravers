@@ -1,0 +1,7 @@
+<div class="gallery" data-gallery>
+  <% items.forEach((ref, i) => { %>
+  <button type="button" data-full="<%= img(ref, 1800) %>" aria-label="View larger photo <%= i + 1 %>">
+    <img src="<%= img(ref, 800) %>" srcset="<%= srcset(ref) %>" sizes="(max-width: 860px) 100vw, 33vw" loading="lazy" decoding="async" alt="<%= alt %> — Travers Demolition project photo <%= i + 1 %>">
+  </button>
+  <% }) %>
+</div>

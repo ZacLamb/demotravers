@@ -1,0 +1,22 @@
+// Central business info for the demolition division — edit here and every page updates.
+module.exports = {
+  name: 'Travers Demolition',
+  division: 'A division of Travers Group',
+  parentName: 'Travers Group',
+  parentUrl: 'https://www.traversgroupma.com',
+  legalName: 'Travers Landscape Construction Engineering & Weatherstone Restoration, LLC',
+  phone: '(508) 888-9432',
+  phoneHref: 'tel:+15088889432',
+  email: 'traverslandscape@gmail.com',
+  street: '152 Cranberry Highway',
+  city: 'Bourne',
+  state: 'MA',
+  zip: '02562',
+  geo: { lat: 41.7746, lng: -70.5465 },
+  region: 'the South Shore & Cape Cod Canal',
+  coverage: 'Bourne to Hingham',
+  years: 42,
+  clients: '1,450+',
+  facebook: 'https://www.facebook.com/travers.fraser/',
+  yelp: 'https://www.yelp.com/biz/travers-landscape-construction-and-engineering-sagamore-beach',
+};
