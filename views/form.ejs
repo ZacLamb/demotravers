@@ -1,0 +1,11 @@
+<form class="lead-form" data-lead-form>
+  <div class="form-top"><span class="eyebrow">START A CONVERSATION</span><h3>Tell us about your project.</h3><p>We'll review the information and follow up about next steps.</p></div>
+  <input type="text" name="company_website" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <input type="hidden" name="page" value="<%= currentPath %>">
+  <div class="fields-two"><label>Your Name <span>*</span><input name="name" placeholder="Full name" autocomplete="name" required maxlength="90"></label><label>Phone Number <span>*</span><input name="phone" type="tel" placeholder="(508) 555-0123" autocomplete="tel" required></label></div>
+  <div class="fields-two"><label>Email Address<input name="email" type="email" placeholder="you@example.com" autocomplete="email"></label><label>Project Town<select name="town"><option value="">Select town</option><% towns.forEach(t=>{ %><option value="<%= t.name %>"><%= t.name %></option><% }) %><option value="Other South Shore community">Other South Shore town</option></select></label></div>
+  <div class="fields-two"><label>Project Type<select name="service" required><option value="">Select service</option><% services.forEach(s=>{ %><option value="<%= s.name %>"><%= s.name %></option><% }) %><option value="Not sure yet">Not sure yet</option></select></label><label>Project Address<input name="address" placeholder="Street address (optional)"></label></div>
+  <label>Project Details<textarea name="message" rows="4" maxlength="1400" placeholder="What's being removed? Approximate size, accessibility, timeline, etc."></textarea></label>
+  <button class="btn btn-orange btn-full" type="submit">SEND PROJECT DETAILS <span aria-hidden="true">↗</span></button>
+  <p class="form-status" role="status" aria-live="polite"></p><p class="form-disclaimer">Submitting a request does not confirm availability or project acceptance. For immediate help, call <a href="<%= phoneLink %>"><%= phone %></a>.</p>
+</form>

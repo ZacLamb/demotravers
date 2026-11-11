@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title><%= title %></title><meta name="description" content="<%= description %>">
+<link rel="canonical" href="<%= canonical %>"><meta property="og:type" content="website"><meta property="og:title" content="<%= title %>"><meta property="og:description" content="<%= description %>"><meta property="og:url" content="<%= canonical %>">
+<meta name="theme-color" content="#11171c"><link rel="icon" type="image/svg+xml" href="/img/favicon.svg"><link rel="stylesheet" href="/css/site.css">
+<script type="application/ld+json"><%- JSON.stringify({'@context':'https://schema.org','@type':'Organization',name:'Travers Demolition — A Division of Travers Group',url:siteUrl,telephone:'+15088889432',parentOrganization:{'@type':'Organization',name:'Travers Group',url:mainSite},areaServed:'South Shore, Massachusetts'}) %></script>
+</head><body>
+<div class="topline"><span>TRAVERS GROUP <span class="muted-divider">/</span> DEDICATED DEMOLITION DIVISION</span><a href="<%= mainSite %>" target="_blank" rel="noopener noreferrer">Visit Travers Group <span aria-hidden="true">↗</span></a></div>
+<header class="site-header"><div class="wrap header-inner"><a class="brand" href="/" aria-label="Travers Demolition home"><span class="brand-mark" aria-hidden="true"><span class="mark-cut"></span>TD</span><span class="brand-type">TRAVERS<span>DEMOLITION</span></span></a>
+<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label="Open menu"><span></span><span></span><span></span></button>
+<nav id="nav" class="nav" aria-label="Main navigation"><a class="<%=currentPath.startsWith('/services')?'active':''%>" href="/services">Services</a><a class="<%=currentPath.startsWith('/areas')?'active':''%>" href="/areas">Service Areas</a><a class="<%=currentPath.startsWith('/insights')?'active':''%>" href="/insights">Insights</a><a href="/contact" class="nav-mobile-cta">Request Estimate</a></nav>
+<div class="header-actions"><a class="header-phone" href="<%= phoneLink %>"><span class="phone-mini">CALL THE TEAM</span><strong><%= phone %></strong></a><a class="btn btn-orange header-cta" href="/contact">GET AN ESTIMATE <span aria-hidden="true">↗</span></a></div></div></header>
